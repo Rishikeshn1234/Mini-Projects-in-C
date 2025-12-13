@@ -1,4 +1,3 @@
-# Mini-Projects-in-C
 🚆 Automatic Train Platform Allocation Simulator (C)
 
 A console-based simulation project written in C that automatically allocates railway platforms to trains based on their arrival and departure times.
