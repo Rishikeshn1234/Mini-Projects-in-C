@@ -12,8 +12,8 @@ int i,j;
 //Strecture for platforms
 typedef struct
 {
-    int index;
     bool empty;
+    int tn;
 }platforms;
 
 //Strecture for trains
@@ -25,6 +25,7 @@ typedef struct
     int pn;
     bool left;
     bool arrived;
+    bool wait;
 }trains;
 
 //Function to get details about n_trains and n_platforms
@@ -64,6 +65,11 @@ void getdata()
 void simulate()
 {
     platforms platform[n_plat];
+    for(i=0;i<n_plat;i++)
+    {
+        platform[i].empty=true;
+        platform[i].tn=-1;
+    }
     trains train[n_trains];
     for(i=0;i<n_trains;i++)
     {
@@ -72,11 +78,11 @@ void simulate()
         int h,m;
         printf("Enter arrival time (hh mm):");
         scanf("%d %d",&h,&m);
-        h+=(h*60)+m;
+        h=(h*60)+m;
         train[i].a_time=h;
         printf("Enter departure time (hh mm):");
         scanf("%d %d",&h,&m);
-        h+=(h*60)+m;
+        h=(h*60)+m;
         train[i].d_time=h;
         if(train[i].d_time-train[i].a_time<=0)
         {
@@ -87,6 +93,7 @@ void simulate()
         train[i].left=false;
         train[i].pn=-1;
         train[i].arrived=false;
+        train[i].wait=false;
     }
     printf("\nAll set. Press any key to start the simulation");
     getch();
@@ -97,7 +104,7 @@ void simulate()
     trains temp;
     for(i=0;i<n_trains;i++)
     {
-        for(j=i+1;j<n_trains;i++)
+        for(j=i+1;j<n_trains;j++)
         {
             if(train[i].a_time>train[j].a_time)
             {
@@ -125,11 +132,85 @@ void simulate()
 
     //Printing and platform logic
     int time;
-    for(time=0;time<=s_time;time++)
+    for(time=0;time<=f_time;time++)
     {
+        system("cls");
         for(i=0;i<n_trains;i++)
         {
-            
+            if(train[i].d_time==time)
+            {
+                train[i].left=true;
+                train[i].pn=-1;
+                platform[i].empty=true;
+                platform[i].tn=-1;
+                train[i].wait=false;
+            }
+
+            if(train[i].a_time==time)
+            {
+                train[i].arrived=true;
+                for(j=0;j<n_plat;j++)
+                {
+                    if(platform[j].empty)
+                    {
+                        platform[j].tn=i;
+                        platform[j].empty=false;
+                        train[i].pn=j;
+                        train[i].wait=true;
+                        break;
+                    }
+                    else
+                    {
+                        train[i].d_time+=train[i].d_time-train[i].a_time;
+                        train[i].wait=false;
+                        for(int k=0;k<n_trains;k++)
+                        {
+                            if(train[k].d_time>f_time)
+                            {
+                                f_time=train[k].d_time;
+                            }
+                        }
+                    }
+                }
+            }
+
         }
+        int H=time/60;
+        int M=time%60;
+
+        printf("=0=0=0=WELCOME TO AUTOMATIC PLATFORM ALLOCATION SIMULATOR=0=0=0=\n");
+        printf("\nCurrent time: %02d:%02d\n",H,M);
+
+        printf("\nID    a_time     d_time     Platform    Status\n");
+        printf("--------------------------------------------------------------------\n");
+
+        for(i=0;i<n_trains;i++)
+        {
+            printf("%-6d",train[i].id);
+        
+           int ah=train[i].a_time/60;
+           int am=train[i].a_time%60;
+           printf("%02d:%02d      ",ah,am);
+        
+           int dh=train[i].d_time/60;
+            int dm=train[i].d_time%60;
+            printf("%02d:%02d      ",dh,dm);
+        
+            printf("%-11d",train[i].pn);
+        
+            if(train[i].left)
+                printf("Left");
+            else if(!train[i].arrived)
+                printf("Not arrived");
+            else if(train[i].arrived && !train[i].wait)
+                printf("Arriving");
+            else if(train[i].wait)
+               printf("Waiting");
+        
+            printf("\n");
+        }
+
+        Sleep(500);
+
     }
 }
