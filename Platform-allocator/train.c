@@ -24,6 +24,7 @@ typedef struct
     int d_time;
     int pn;
     bool left;
+    bool arrived;
 }trains;
 
 //Function to get details about n_trains and n_platforms
@@ -85,9 +86,50 @@ void simulate()
         }
         train[i].left=false;
         train[i].pn=-1;
+        train[i].arrived=false;
     }
     printf("\nAll set. Press any key to start the simulation");
     getch();
     system("cls");
     printf("=0=0=0=Welcome to Platfrom simulator=0=0=0=\n");
+
+    //Sorting all trains by their arrival time
+    trains temp;
+    for(i=0;i<n_trains;i++)
+    {
+        for(j=i+1;j<n_trains;i++)
+        {
+            if(train[i].a_time>train[j].a_time)
+            {
+                temp=train[i];
+                train[i]=train[j];
+                train[j]=temp;
+            }
+        }
+    }
+
+    //Setting simulation start time and end time
+    int s_time=train[0].a_time;
+    int f_time=train[0].d_time;
+    for(i=0;i<n_trains;i++)
+    {
+        if(train[i].a_time<s_time)
+        {
+            s_time=train[i].a_time;
+        }
+        if(train[i].d_time>f_time)
+        {
+            f_time=train[i].d_time;
+        }
+    }
+
+    //Printing and platform logic
+    int time;
+    for(time=0;time<=s_time;time++)
+    {
+        for(i=0;i<n_trains;i++)
+        {
+            
+        }
+    }
 }
