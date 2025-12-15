@@ -140,9 +140,9 @@ void simulate()
             if(train[i].d_time==time)
             {
                 train[i].left=true;
+                platform[train[i].pn].empty=true;
+                platform[train[i].pn].tn=-1;
                 train[i].pn=-1;
-                platform[i].empty=true;
-                platform[i].tn=-1;
                 train[i].wait=false;
             }
 
@@ -161,15 +161,7 @@ void simulate()
                     }
                     else
                     {
-                        train[i].d_time+=train[i].d_time-train[i].a_time;
                         train[i].wait=false;
-                        for(int k=0;k<n_trains;k++)
-                        {
-                            if(train[k].d_time>f_time)
-                            {
-                                f_time=train[k].d_time;
-                            }
-                        }
                     }
                 }
             }
